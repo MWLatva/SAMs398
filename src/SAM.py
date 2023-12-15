@@ -21,4 +21,22 @@ def SAM(perm, k, n, PP, Jac, j0, L, U):
         rowM = []
         colM = []
         valM = []
+        for j in range(n):
+            #get the submatrix from G
+            for L in range(nnz_LS[j]):
+                for M_r in range(nnz_M[j]):
+                    G[L][M_r] = Jac[nz_LS[j]][nz_M[j]]
+            #G = [] do the list comp
+            M = np.linalg.solve(np.array(G[:nnz_LS[j]][:nnz_M[j]]), J0[nz_LS[j]][j])
+            #fix solve
+            np.append(rowM, nz_M[j])
+            jarray = np.full((nnz_M[j]), j)
+            np.append(colM, jarray)
+            np.append(valM, np.array(M[:nnz_M[j]]))
+
+        MM = coo_array(np.array(valM[len(valM)-nnz_M[j]:]),
+                       (np.array(rowM[len(rowM)-nnz_M[j]:]),
+                        np.array(colM[len(colM)-nnz_M[j]:])))
+        
+        return ['SAM', Jac[:][perm[:]], L, U, MM]
 
