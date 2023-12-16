@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.sparse import coo_array
 
-def SAM(perm, k, n, PP, Jac, j0, L, U):
+def SAM(k, n, PP, Jac, J0):
     nz_M = []
     nnz_M = []
     nz_LS = []
@@ -38,5 +38,5 @@ def SAM(perm, k, n, PP, Jac, j0, L, U):
                        (np.array(rowM[len(rowM)-nnz_M[j]:]),
                         np.array(colM[len(colM)-nnz_M[j]:])))
         
-        return ['SAM', Jac[:][perm[:]], L, U, MM]
+        return #['SAM', Jac[:][perm[:]], L, U, MM]
 
