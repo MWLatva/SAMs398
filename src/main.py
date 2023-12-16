@@ -12,7 +12,7 @@ Jac = mat_contents["saveSys"][0][0]
 I, J, _ = find(Jac) #dont need values
 findJ = coo_matrix((np.ones_like(I), (I, J)), shape=Jac.shape, dtype=bool)
 PP = findJ.todense().astype(bool)
-PP2 = np.logical_and(PP, PP) #equivelent of double multiplication
+PP2 = np.matmul(PP, PP) #equivelent of double multiplication
 
 nnzMM = np.count_nonzero(PP2)
 rowM = np.zeros((2*nnzMM,1))
@@ -24,5 +24,5 @@ J0 = Jac
 # print(coo_matrix(PP2))
 
 # for i in range(69):
-# Jac = mat_contents["saveSys"][1][0]
-# SAM(2, 100, PP, Jac, J0)
+Jac = mat_contents["saveSys"][1][0]
+SAM(2, 100, PP, PP2, Jac, J0)

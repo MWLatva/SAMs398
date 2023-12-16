@@ -1,16 +1,16 @@
 import numpy as np
 from scipy.sparse import coo_array
 
-def SAM(k, n, PP, Jac, J0):
+def SAM(k, n, PP, PP2, Jac, J0):
     nz_M = []
     nnz_M = []
     nz_LS = []
     nnz_LS = []
     if k == 2:
         for j in range(n):
-            nz_M.append(np.nonzero(PP)[j])
+            nz_M.append(np.nonzero(PP[j])[1])
             nnz_M.append(len(nz_M[j]))
-            nz_LS.append(np.nonzero(PP)[j])
+            nz_LS.append(np.nonzero(PP2[j])[1])
             nnz_LS.append(len(nz_LS[j]))
 
         max_col = max(nnz_M)
@@ -23,10 +23,8 @@ def SAM(k, n, PP, Jac, J0):
         valM = []
         for j in range(n):
             #get the submatrix from G
-            for L in range(nnz_LS[j]):
-                for M_r in range(nnz_M[j]):
-                    G[L][M_r] = Jac[nz_LS[j]][nz_M[j]]
-            #G = [] do the list comp
+            G = [[Jac[nz_LS[j][row], nz_M[j][col]] for col in range(nnz_M[j])] for row in range(nnz_LS[j])]
+
             M = np.linalg.solve(np.array(G[:nnz_LS[j]][:nnz_M[j]]), J0[nz_LS[j]][j])
             #fix solve
             np.append(rowM, nz_M[j])
