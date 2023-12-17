@@ -25,8 +25,10 @@ def SAM(k, n, PP, PP2, Jac, J0):
             #get the submatrix from G
             G = [[Jac[nz_LS[j][row], nz_M[j][col]] for col in range(nnz_M[j])] for row in range(nnz_LS[j])]
 
-            M = np.linalg.solve(np.array(G[:nnz_LS[j]][:nnz_M[j]]), J0[nz_LS[j]][j])
-            #fix solve
+            #M = np.linalg.solve(np.array(G[:nnz_LS[j]][:nnz_M[j]]), )
+            #np.linalg.solve does not work for not Square A. use least squares:
+            M = np.linalg.lstsq([g_col[:nnz_M[j]] for g_col in G[:nnz_LS[j]]], [col[j] for col in J0.todense()[nz_LS[j]].tolist()])
+            M = M[0] #just solution
             np.append(rowM, nz_M[j])
             jarray = np.full((nnz_M[j]), j)
             np.append(colM, jarray)
