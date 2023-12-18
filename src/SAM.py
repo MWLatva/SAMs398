@@ -9,7 +9,7 @@ def SAM(k, n, PP, PP2, Jac, J0):
     if k == 2:
         for j in range(n):
             nz_M.append(np.nonzero(PP[j])[1])
-            nnz_M.append(len(nz_M[j]))
+            nnz_M.append(int(len(nz_M[j])))
             nz_LS.append(np.nonzero(PP2[j])[1])
             nnz_LS.append(len(nz_LS[j]))
 
@@ -29,14 +29,13 @@ def SAM(k, n, PP, PP2, Jac, J0):
             #np.linalg.solve does not work for not Square A. use least squares:
             M = np.linalg.lstsq([g_col[:nnz_M[j]] for g_col in G[:nnz_LS[j]]], [col[j] for col in J0.todense()[nz_LS[j]].tolist()])
             M = M[0] #just solution
-            np.append(rowM, nz_M[j])
-            jarray = np.full((nnz_M[j]), j)
-            np.append(colM, jarray)
-            np.append(valM, np.array(M[:nnz_M[j]]))
 
-        MM = coo_array(np.array(valM[len(valM)-nnz_M[j]:]),
-                       (np.array(rowM[len(rowM)-nnz_M[j]:]),
-                        np.array(colM[len(colM)-nnz_M[j]:])))
+            rowM = np.append(rowM, nz_M[j][:nnz_M[j]])
+            jarray = np.full((nnz_M[j]), int(j))
+            colM = np.append(colM, jarray)
+            valM = np.append(valM, np.array(M[:nnz_M[j]]))
+
+        MM = coo_array((valM, (rowM.astype(np.int64), colM.astype(np.int64))))
         
-        return #['SAM', Jac[:][perm[:]], L, U, MM]
+        return MM
 
