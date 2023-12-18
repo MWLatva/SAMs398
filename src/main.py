@@ -25,4 +25,5 @@ J0 = Jac
 
 # for i in range(69):
 Jac = mat_contents["saveSys"][1][0]
-SAM(2, 100, PP, PP2, Jac, J0)
+MM = SAM(1, 100, PP, PP2, Jac, J0)
+
