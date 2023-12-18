@@ -2,6 +2,8 @@ import scipy.io
 from scipy.sparse import coo_matrix, find
 import numpy as np
 from SAM import SAM
+import time
+import matplotlib.pyplot as plt
 
 # Load .mat file
 mat_file_path = "\\SAMs398\\src\\testSystems.mat"
@@ -34,10 +36,15 @@ for j in range(n):
 
 MMs = np.zeros((70), dtype= np.object_)
 np.put(MMs, 0, J0) #maybe
+itertimes = np.zeros((70)).tolist()
 for i in range(69):
+    start = time.time()
     k = i+1
     Jac = mat_contents["saveSys"][k][0]
     kMM = SAM(k, n, Jac, J0, nnz_LS, nnz_M, nz_LS, nz_M)
     np.put(MMs, k, kMM,)
+    itertimes[k] = (itertimes[k-1] + time.time() - start)
 
+plt.plot(itertimes)
+plt.show()
 print("done")
